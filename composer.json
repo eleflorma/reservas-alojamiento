@@ -1,0 +1,21 @@
+
+{
+    "name": "eleni/reservas-alojamiento",
+    "description": "API de gestión de reservas de alojamiento.",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "eleflo",
+            "email": "ele.flores.marquez@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.30",
+        "vlucas/phpdotenv": "^5.7"
+    }
+}
+

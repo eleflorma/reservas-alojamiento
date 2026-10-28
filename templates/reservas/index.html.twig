@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de reservas</title>
+    <link rel="stylesheet" href="assets/css/estilos.css">
+    <script src="assets/js/reservas.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Gestión de reservas</h1>
+        <p>Panel de administración de alojamientos</p>
+    </header>
+    <main>
+<section class="panel">
+    <h2>Nueva reserva</h2>
+    <form id="form-reserva" class="formulario-reserva">
+        <div class="campo">
+            <label for="nombre_huesped">Nombre del huésped</label>
+            <input
+                type="text"
+                id="nombre_huesped"
+                name="nombre_huesped"
+                maxlength="120"
+                required
+            >
+        </div>
+        <div class="campo">
+            <label for="email_huesped">Correo electrónico</label>
+            <input
+                type="email"
+                id="email_huesped"
+                name="email_huesped"
+                maxlength="254"
+                required
+            >
+        </div>
+        <div class="campo">
+            <label for="nombre_alojamiento">Alojamiento</label>
+            <input
+                type="text"
+                id="nombre_alojamiento"
+                name="nombre_alojamiento"
+                maxlength="150"
+                required
+            >
+        </div>
+        <div class="campo">
+            <label for="nueva_fecha_entrada">Fecha de entrada</label>
+            <input
+                type="date"
+                id="nueva_fecha_entrada"
+                name="fecha_entrada"
+                required
+            >
+        </div>
+        <div class="campo">
+            <label for="nueva_fecha_salida">Fecha de salida</label>
+            <input
+                type="date"
+                id="nueva_fecha_salida"
+                name="fecha_salida"
+                required
+            >
+        </div>
+        <div class="campo">
+            <label for="importe">Importe (€)</label>
+            <input
+                type="number"
+                id="importe"
+                name="importe"
+                min="0"
+                step="0.01"
+                required
+            >
+        </div>
+        <div class="campo campo-completo">
+            <label for="notas">Notas (opcional)</label>
+            <textarea
+                id="notas"
+                name="notas"
+                rows="3"
+                maxlength="5000"
+            ></textarea>
+        </div>
+
+        <div class="campo campo-completo">
+            <button type="submit" id="btn-crear-reserva">
+                Crear reserva
+            </button>
+        </div>
+
+        <p id="mensaje-creacion"
+           class="campo-completo"
+           role="status"
+           aria-live="polite"></p>
+    </form>
+</section>
+
+        <section class="panel">
+            <h2>Buscar reservas</h2>
+            <form id="form-filtros" class="filtros">
+                <div class="campo">
+                    <label for="busqueda">Nombre del huésped</label>
+                    <input
+                        type="search"
+                        id="busqueda"
+                        name="busqueda"
+                        placeholder="Escribe un nombre"
+                    >
+                </div>
+                <div class="campo">
+                    <label for="estado">Estado</label>
+                    <select id="estado" name="estado">
+                        <option value="">Todos los estados</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="fecha_desde">Entrada desde</label>
+                    <input type="date" id="fecha_desde" name="fecha_desde">
+                </div>
+                <div class="campo">
+                    <label for="fecha_hasta">Entrada hasta</label>
+                    <input type="date" id="fecha_hasta" name="fecha_hasta">
+                </div>
+                <button type="submit">Buscar</button>
+                <button type="reset" class="secundario">Limpiar filtros</button>
+            </form>
+        </section>
+        <section class="panel">
+            <h2>Listado de reservas</h2>
+            <p id="mensaje" role="status" aria-live="polite">
+                Mostrando reservas...
+            </p>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Huésped</th>
+                            <th>Email</th>
+                            <th>Alojamiento</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Estado</th>
+                            <th>Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-reservas">
+                        {% for reserva in reservas %}
+                            <tr>
+                                <td>{{ reserva.id }}</td>
+                                <td>{{ reserva.nombre_huesped }}</td>
+                                <td>{{ reserva.email_huesped }}</td>
+                                <td>{{ reserva.nombre_alojamiento }}</td>
+                                <td>{{ reserva.fecha_entrada }}</td>
+                                <td>{{ reserva.fecha_salida }}</td>
+                                <td>{{ reserva.estado }}</td>
+                                <td>{{ reserva.importe }} €</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No hay reservas registradas.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,191 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f4f6f9;
+    color: #253247;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+}
+
+header {
+    padding: 28px 5%;
+    background: #24364b;
+    color: white;
+}
+
+header h1 {
+    margin: 0 0 8px;
+}
+
+header p {
+    margin: 0;
+    color: #d6dfeb;
+}
+
+main {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 24px;
+}
+
+.panel {
+    padding: 24px;
+    margin-bottom: 24px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px #172b4d12;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+input,
+select,
+button {
+    min-height: 40px;
+    padding: 9px 12px;
+    border: 1px solid #ccd4df;
+    border-radius: 6px;
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: #2459a9;
+    color: white;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #194783;
+}
+
+button.secundario {
+    background: #e7ebf1;
+    color: #253247;
+}
+
+.tabla-contenedor {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+th,
+td {
+    padding: 13px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e9ef;
+}
+
+th {
+    background: #f5f7fa;
+    color: #45556b;
+}
+
+.estado {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.estado--pendiente {
+    background: #fff0c2;
+    color: #795600;
+}
+
+.estado--confirmada {
+    background: #d8f3e2;
+    color: #17683a;
+}
+
+.estado--cancelada {
+    background: #fde0e0;
+    color: #a32222;
+}
+
+#mensaje {
+    margin: 16px 0;
+}
+
+.error {
+    color: #a32222;
+}
+
+@media (max-width: 850px) {
+    .filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    main {
+        padding: 0 12px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .filtros {
+        grid-template-columns: 1fr;
+    }
+}
+
+.formulario-reserva {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.campo-completo {
+    grid-column: 1 / -1;
+}
+
+.formulario-reserva textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 10px 12px;
+    border: 1px solid #ccd4df;
+    border-radius: 6px;
+    font: inherit;
+}
+
+#mensaje-creacion {
+    margin: 0;
+}
+
+#mensaje-creacion.exito {
+    color: #17683a;
+}
+
+#mensaje-creacion.error {
+    color: #a32222;
+}
+
+@media (max-width: 600px) {
+    .formulario-reserva {
+        grid-template-columns: 1fr;
+    }
+}
+

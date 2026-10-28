@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /reservas-alojamiento/public/
+
+RewriteRule ^api/reservas/?$ index.php [QSA,L]
+RewriteRule ^api/reservas/[0-9]+/?$ index.php [QSA,L]
+
