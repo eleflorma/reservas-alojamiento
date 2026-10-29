@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de reservas</title>
-    <link rel="stylesheet" href="assets/css/estilos.css">
-    <script src="assets/js/reservas.js" defer></script>
-</head>
-<body>
-    <header>
-        <h1>Gestión de reservas</h1>
-        <p>Panel de administración de alojamientos</p>
-    </header>
-    <main>
+
+{% extends "base.html.twig" %}
+
+{% block title %}Gestión de reservas{% endblock %}
+
+{% block content %}
+
 <section class="panel">
     <h2>Nueva reserva</h2>
     <form id="form-reserva" class="formulario-reserva">
@@ -204,6 +196,4 @@
                 Cargando detalles...
             </div>
         </dialog>
-    </main>
-</body>
-</html>
+{% endblock %}
