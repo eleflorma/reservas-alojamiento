@@ -21,13 +21,14 @@ function crearCelda(valor) {
     return celda;
 }
 
+
 function mostrarReservas(reservas) {
     tabla.replaceChildren();
 
     if (reservas.length === 0) {
         const fila = document.createElement('tr');
         const celda = crearCelda('No se encontraron reservas.');
-        celda.colSpan = 8;
+        celda.colSpan = 9;
         fila.appendChild(celda);
         tabla.appendChild(fila);
         return;
@@ -64,6 +65,31 @@ function mostrarReservas(reservas) {
             )
         );
 
+        // Creamos la columna de acciones.
+        const celdaAcciones = document.createElement('td');
+        celdaAcciones.classList.add('acciones');
+
+        const botonDetalles = document.createElement('button');
+        botonDetalles.type = 'button';
+        botonDetalles.classList.add('secundario');
+        botonDetalles.dataset.accion = 'detalles';
+        botonDetalles.dataset.id = reserva.id;
+        botonDetalles.textContent = 'Ver detalles';
+
+        celdaAcciones.appendChild(botonDetalles);
+
+        if (reserva.estado !== 'cancelada') {
+            const botonCancelar = document.createElement('button');
+            botonCancelar.type = 'button';
+            botonCancelar.classList.add('peligro');
+            botonCancelar.dataset.accion = 'cancelar';
+            botonCancelar.dataset.id = reserva.id;
+            botonCancelar.textContent = 'Cancelar';
+
+            celdaAcciones.appendChild(botonCancelar);
+        }
+
+        fila.appendChild(celdaAcciones);
         tabla.appendChild(fila);
     });
 }
@@ -183,5 +209,171 @@ formularioReserva.addEventListener('submit', async evento => {
         mensajeCreacion.classList.add('error');
     } finally {
         botonCrearReserva.disabled = false;
+    }
+});
+
+const dialogoDetalles = document.querySelector('#dialogo-detalles');
+const contenidoDetalles = document.querySelector('#contenido-detalles');
+const botonCerrarDetalles = document.querySelector('#cerrar-detalles');
+
+// Cierra la ventana de detalles.
+botonCerrarDetalles.addEventListener('click', () => {
+    dialogoDetalles.close();
+});
+
+// Añade un dato a la ventana de detalles de forma segura.
+function anadirDato(contenedor, etiqueta, valor) {
+    const parrafo = document.createElement('p');
+    const negrita = document.createElement('strong');
+
+    negrita.textContent = `${etiqueta}: `;
+    parrafo.appendChild(negrita);
+    parrafo.appendChild(
+        document.createTextNode(valor ?? 'No indicado')
+    );
+
+    contenedor.appendChild(parrafo);
+}
+
+// Carga y muestra los detalles de una reserva.
+async function mostrarDetalles(id) {
+    contenidoDetalles.replaceChildren();
+
+    const cargando = document.createElement('p');
+    cargando.textContent = 'Cargando detalles...';
+    contenidoDetalles.appendChild(cargando);
+
+    dialogoDetalles.showModal();
+
+    try {
+        const respuesta = await fetch(`${apiUrl}/${id}`);
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            throw new Error(
+                resultado.mensaje || 'No se pudieron cargar los detalles.'
+            );
+        }
+
+        const reserva = resultado.datos;
+        contenidoDetalles.replaceChildren();
+
+        const seccionDatos = document.createElement('section');
+        const tituloDatos = document.createElement('h3');
+        tituloDatos.textContent = 'Información de la reserva';
+        seccionDatos.appendChild(tituloDatos);
+
+        anadirDato(seccionDatos, 'Número', reserva.id);
+        anadirDato(seccionDatos, 'Huésped', reserva.nombre_huesped);
+        anadirDato(seccionDatos, 'Correo electrónico', reserva.email_huesped);
+        anadirDato(seccionDatos, 'Alojamiento', reserva.nombre_alojamiento);
+        anadirDato(seccionDatos, 'Entrada', reserva.fecha_entrada);
+        anadirDato(seccionDatos, 'Salida', reserva.fecha_salida);
+        anadirDato(seccionDatos, 'Estado', reserva.estado);
+        anadirDato(
+            seccionDatos,
+            'Importe',
+            formatoImporte.format(Number(reserva.importe))
+        );
+        anadirDato(seccionDatos, 'Notas', reserva.notas);
+        anadirDato(seccionDatos, 'Fecha de creación', reserva.fecha_creacion);
+
+        contenidoDetalles.appendChild(seccionDatos);
+
+        const seccionHistorial = document.createElement('section');
+        const tituloHistorial = document.createElement('h3');
+        tituloHistorial.textContent = 'Historial de la reserva';
+        seccionHistorial.appendChild(tituloHistorial);
+
+        const historial = document.createElement('ul');
+
+        if (reserva.historial && reserva.historial.length > 0) {
+            reserva.historial.forEach(evento => {
+                const elemento = document.createElement('li');
+                elemento.textContent =
+                    `${evento.fecha_creacion} — ${evento.descripcion}`;
+
+                historial.appendChild(elemento);
+            });
+        } else {
+            const elemento = document.createElement('li');
+            elemento.textContent = 'No hay eventos registrados.';
+            historial.appendChild(elemento);
+        }
+
+        seccionHistorial.appendChild(historial);
+        contenidoDetalles.appendChild(seccionHistorial);
+
+    } catch (error) {
+        contenidoDetalles.replaceChildren();
+
+        const mensajeError = document.createElement('p');
+        mensajeError.classList.add('error');
+        mensajeError.textContent = error.message;
+
+        contenidoDetalles.appendChild(mensajeError);
+    }
+}
+
+// Gestiona los botones de acciones de la tabla.
+tabla.addEventListener('click', async evento => {
+    const boton = evento.target.closest('button[data-accion]');
+
+    if (!boton) {
+        return;
+    }
+
+    const id = boton.dataset.id;
+    const accion = boton.dataset.accion;
+
+    if (accion === 'detalles') {
+        await mostrarDetalles(id);
+        return;
+    }
+
+    if (accion === 'cancelar') {
+        const confirmar = window.confirm(
+            `¿Seguro que quieres cancelar la reserva número ${id}?`
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        boton.disabled = true;
+        mensaje.textContent = 'Cancelando reserva...';
+        mensaje.classList.remove('error');
+
+        try {
+            const respuesta = await fetch(`${apiUrl}/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    estado: 'cancelada'
+                })
+            });
+
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok || !resultado.exito) {
+                throw new Error(
+                    resultado.mensaje || 'No se pudo cancelar la reserva.'
+                );
+            }
+
+            mensaje.textContent = `La reserva ${id} se ha cancelado correctamente.`;
+
+            // Volvemos a consultar la API para actualizar la tabla.
+            await cargarReservas();
+
+        } catch (error) {
+            mensaje.textContent = error.message;
+            mensaje.classList.add('error');
+
+        } finally {
+            boton.disabled = false;
+        }
     }
 });

@@ -84,20 +84,17 @@
                 maxlength="5000"
             ></textarea>
         </div>
-
         <div class="campo campo-completo">
             <button type="submit" id="btn-crear-reserva">
                 Crear reserva
             </button>
         </div>
-
         <p id="mensaje-creacion"
            class="campo-completo"
            role="status"
            aria-live="polite"></p>
     </form>
 </section>
-
         <section class="panel">
             <h2>Buscar reservas</h2>
             <form id="form-filtros" class="filtros">
@@ -148,8 +145,9 @@
                             <th>Salida</th>
                             <th>Estado</th>
                             <th>Importe</th>
+                            <th>Acciones</th>
                         </tr>
-                    </thead>
+                    </thead>            
                     <tbody id="tabla-reservas">
                         {% for reserva in reservas %}
                             <tr>
@@ -161,16 +159,51 @@
                                 <td>{{ reserva.fecha_salida }}</td>
                                 <td>{{ reserva.estado }}</td>
                                 <td>{{ reserva.importe }} €</td>
+                                <td class="acciones">
+                                    <button
+                                        type="button"
+                                        class="secundario"
+                                        data-accion="detalles"
+                                        data-id="{{ reserva.id }}"
+                                    >
+                                        Ver detalles
+                                    </button>
+                                    {% if reserva.estado != 'cancelada' %}
+                                        <button
+                                            type="button"
+                                            class="peligro"
+                                            data-accion="cancelar"
+                                            data-id="{{ reserva.id }}"
+                                        >
+                                            Cancelar
+                                        </button>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="8">No hay reservas registradas.</td>
+                                <td colspan="9">No hay reservas registradas.</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </section>
+         <dialog id="dialogo-detalles">
+            <div class="cabecera-dialogo">
+                <h2>Detalles de la reserva</h2>
+                <button
+                    type="button"
+                    id="cerrar-detalles"
+                    class="secundario"
+                >
+                    Cerrar
+                </button>
+            </div>
+            <div id="contenido-detalles">
+                Cargando detalles...
+            </div>
+        </dialog>
     </main>
 </body>
 </html>

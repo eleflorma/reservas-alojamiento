@@ -189,3 +189,67 @@ th {
     }
 }
 
+/* Botones de las acciones de cada reserva */
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+button.peligro {
+    background: #c0392b;
+    color: white;
+}
+
+button.peligro:hover {
+    background: #922b21;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* Ventana de detalles */
+#dialogo-detalles {
+    width: min(650px, calc(100% - 32px));
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px;
+    border: none;
+    border-radius: 12px;
+    color: #253247;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+#dialogo-detalles::backdrop {
+    background: rgba(20, 30, 45, 0.6);
+}
+
+.cabecera-dialogo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.cabecera-dialogo h2 {
+    margin: 0;
+}
+
+#contenido-detalles h3 {
+    margin-top: 22px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e9ef;
+}
+
+#contenido-detalles p {
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+#contenido-detalles li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
