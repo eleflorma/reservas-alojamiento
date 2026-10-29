@@ -26,8 +26,8 @@ function responderJson(array $datos, int $codigo = 200): never
     echo json_encode(
         $datos,
         JSON_UNESCAPED_UNICODE
-        | JSON_UNESCAPED_SLASHES
-        | JSON_THROW_ON_ERROR
+            | JSON_UNESCAPED_SLASHES
+            | JSON_THROW_ON_ERROR
     );
 
     exit;
@@ -128,10 +128,12 @@ try {
             ], 400);
         }
 
-        foreach ([
-            'fecha_desde' => $fechaDesde,
-            'fecha_hasta' => $fechaHasta,
-        ] as $nombre => $fecha) {
+        foreach (
+            [
+                'fecha_desde' => $fechaDesde,
+                'fecha_hasta' => $fechaHasta,
+            ] as $nombre => $fecha
+        ) {
             if (
                 $fecha !== null
                 && (
@@ -225,8 +227,9 @@ try {
     }
 
     // ----------------------------------------------
-    // 4. CANCELAR UNA RESERVA
+    // 4. CAMBIAR EL ESTADO DE UNA RESERVA
     // PATCH /api/reservas/1
+    // Cuerpo JSON: {"estado":"confirmada"}
     // Cuerpo JSON: {"estado":"cancelada"}
     // ----------------------------------------------
 
@@ -239,17 +242,21 @@ try {
         )
     ) {
         $datos = leerJson();
+        $estado = $datos['estado'] ?? null;
+        $id = (int) $coincidencias[1];
 
-        if (($datos['estado'] ?? null) !== 'cancelada') {
+        if ($estado === 'confirmada') {
+            $reserva = $servicio->confirmar($id);
+            $mensaje = 'Reserva confirmada correctamente.';
+        } elseif ($estado === 'cancelada') {
+            $reserva = $servicio->cancelar($id);
+            $mensaje = 'Reserva cancelada correctamente.';
+        } else {
             responderJson([
                 'exito' => false,
-                'mensaje' => 'Solo se permite cambiar el estado a cancelada.'
+                'mensaje' => 'El estado debe ser confirmada o cancelada.'
             ], 400);
         }
-
-        $reserva = $servicio->cancelar(
-            (int) $coincidencias[1]
-        );
 
         if ($reserva === null) {
             responderJson([
@@ -260,10 +267,11 @@ try {
 
         responderJson([
             'exito' => true,
-            'mensaje' => 'Reserva cancelada correctamente.',
+            'mensaje' => $mensaje,
             'datos' => $reserva
         ]);
     }
+
 
     // ----------------------------------------------
     // 5. RUTA NO ENCONTRADA
@@ -273,13 +281,11 @@ try {
         'exito' => false,
         'mensaje' => 'Ruta no encontrada.'
     ], 404);
-
 } catch (InvalidArgumentException $e) {
     responderJson([
         'exito' => false,
         'mensaje' => $e->getMessage()
     ], 400);
-
 } catch (Throwable $e) {
     error_log((string) $e);
 

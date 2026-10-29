@@ -12,8 +12,7 @@ class ReservaService
 {
     public function __construct(
         private ReservaRepository $repositorio
-    ) {
-    }
+    ) {}
 
     /**
      * Valida los datos y crea una reserva.
@@ -187,6 +186,42 @@ class ReservaService
         return $this->repositorio->cambiarEstado(
             $id,
             'cancelada'
+        );
+    }
+    /**
+     * Confirma una reserva existente.
+     *
+     * Devuelve null si la reserva no existe.
+     */
+    public function confirmar(int $id): ?array
+    {
+        if ($id <= 0) {
+            throw new InvalidArgumentException(
+                'El identificador de la reserva no es válido.'
+            );
+        }
+
+        $reserva = $this->repositorio->obtenerPorId($id);
+
+        if ($reserva === null) {
+            return null;
+        }
+
+        if ($reserva['estado'] === 'confirmada') {
+            throw new InvalidArgumentException(
+                'La reserva ya está confirmada.'
+            );
+        }
+
+        if ($reserva['estado'] === 'cancelada') {
+            throw new InvalidArgumentException(
+                'No se puede confirmar una reserva cancelada.'
+            );
+        }
+
+        return $this->repositorio->cambiarEstado(
+            $id,
+            'confirmada'
         );
     }
 

@@ -22,6 +22,7 @@ function crearCelda(valor) {
 }
 
 
+
 function mostrarReservas(reservas) {
     tabla.replaceChildren();
 
@@ -78,6 +79,19 @@ function mostrarReservas(reservas) {
 
         celdaAcciones.appendChild(botonDetalles);
 
+        // Solo se pueden confirmar reservas pendientes.
+        if (reserva.estado === 'pendiente') {
+            const botonConfirmar = document.createElement('button');
+            botonConfirmar.type = 'button';
+            botonConfirmar.classList.add('secundario');
+            botonConfirmar.dataset.accion = 'confirmar';
+            botonConfirmar.dataset.id = reserva.id;
+            botonConfirmar.textContent = 'Confirmar';
+
+            celdaAcciones.appendChild(botonConfirmar);
+        }
+
+        // Las reservas canceladas no se pueden cancelar otra vez.
         if (reserva.estado !== 'cancelada') {
             const botonCancelar = document.createElement('button');
             botonCancelar.type = 'button';
@@ -93,6 +107,7 @@ function mostrarReservas(reservas) {
         tabla.appendChild(fila);
     });
 }
+
 
 async function cargarReservas() {
     mensaje.textContent = 'Cargando reservas...';
@@ -316,6 +331,7 @@ async function mostrarDetalles(id) {
 }
 
 // Gestiona los botones de acciones de la tabla.
+
 tabla.addEventListener('click', async evento => {
     const boton = evento.target.closest('button[data-accion]');
 
@@ -331,49 +347,62 @@ tabla.addEventListener('click', async evento => {
         return;
     }
 
-    if (accion === 'cancelar') {
-        const confirmar = window.confirm(
+    if (accion !== 'cancelar' && accion !== 'confirmar') {
+        return;
+    }
+
+    const esCancelacion = accion === 'cancelar';
+    const estado = esCancelacion ? 'cancelada' : 'confirmada';
+
+    if (esCancelacion) {
+        const aceptar = window.confirm(
             `¿Seguro que quieres cancelar la reserva número ${id}?`
         );
 
-        if (!confirmar) {
+        if (!aceptar) {
             return;
         }
+    }
 
-        boton.disabled = true;
-        mensaje.textContent = 'Cancelando reserva...';
-        mensaje.classList.remove('error');
+    boton.disabled = true;
+    mensaje.textContent = esCancelacion
+        ? 'Cancelando reserva...'
+        : 'Confirmando reserva...';
 
-        try {
-            const respuesta = await fetch(`${apiUrl}/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    estado: 'cancelada'
-                })
-            });
+    mensaje.classList.remove('error');
 
-            const resultado = await respuesta.json();
+    try {
+        const respuesta = await fetch(`${apiUrl}/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                estado: estado
+            })
+        });
 
-            if (!respuesta.ok || !resultado.exito) {
-                throw new Error(
-                    resultado.mensaje || 'No se pudo cancelar la reserva.'
-                );
-            }
+        const resultado = await respuesta.json();
 
-            mensaje.textContent = `La reserva ${id} se ha cancelado correctamente.`;
-
-            // Volvemos a consultar la API para actualizar la tabla.
-            await cargarReservas();
-
-        } catch (error) {
-            mensaje.textContent = error.message;
-            mensaje.classList.add('error');
-
-        } finally {
-            boton.disabled = false;
+        if (!respuesta.ok || !resultado.exito) {
+            throw new Error(
+                resultado.mensaje ||
+                'No se pudo actualizar el estado de la reserva.'
+            );
         }
+
+        mensaje.textContent = esCancelacion
+            ? `La reserva ${id} se ha cancelado correctamente.`
+            : `La reserva ${id} se ha confirmado correctamente.`;
+
+        await cargarReservas();
+
+    } catch (error) {
+        mensaje.textContent = error.message;
+        mensaje.classList.add('error');
+
+    } finally {
+        boton.disabled = false;
     }
 });
+
