@@ -1,3 +1,4 @@
+
 * {
     box-sizing: border-box;
 }
@@ -9,6 +10,8 @@ body {
     font-family: Arial, sans-serif;
     font-size: 15px;
 }
+
+/* Cabecera */
 
 header {
     padding: 28px 5%;
@@ -25,6 +28,8 @@ header p {
     color: #d6dfeb;
 }
 
+/* Contenido principal */
+
 main {
     max-width: 1400px;
     margin: 30px auto;
@@ -39,12 +44,7 @@ main {
     box-shadow: 0 3px 12px #172b4d12;
 }
 
-.filtros {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(140px, 1fr));
-    gap: 16px;
-    align-items: end;
-}
+/* Campos y botones */
 
 .campo {
     display: flex;
@@ -79,6 +79,26 @@ button.secundario {
     color: #253247;
 }
 
+button.secundario:hover {
+    background: #d4dbe5;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* Filtros */
+
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+/* Tabla de reservas */
+
 .tabla-contenedor {
     overflow-x: auto;
 }
@@ -86,12 +106,11 @@ button.secundario {
 table {
     width: 100%;
     border-collapse: collapse;
-    white-space: nowrap;
 }
 
 th,
 td {
-    padding: 13px 12px;
+    padding: 12px 10px;
     text-align: left;
     border-bottom: 1px solid #e5e9ef;
 }
@@ -100,6 +119,12 @@ th {
     background: #f5f7fa;
     color: #45556b;
 }
+
+td {
+    vertical-align: middle;
+}
+
+/* Estados de las reservas */
 
 .estado {
     display: inline-block;
@@ -124,6 +149,36 @@ th {
     color: #a32222;
 }
 
+/* Botones de las acciones de cada reserva */
+
+.acciones {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 190px;
+}
+
+.acciones button {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* Botón Cancelar: rojo */
+
+.acciones button.peligro {
+    background-color: #c0392b;
+    color: #ffffff;
+}
+
+.acciones button.peligro:hover {
+    background-color: #922b21;
+}
+
+/* Mensajes */
+
 #mensaje {
     margin: 16px 0;
 }
@@ -132,25 +187,7 @@ th {
     color: #a32222;
 }
 
-@media (max-width: 850px) {
-    .filtros {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 520px) {
-    main {
-        padding: 0 12px;
-    }
-
-    .panel {
-        padding: 16px;
-    }
-
-    .filtros {
-        grid-template-columns: 1fr;
-    }
-}
+/* Formulario de creación de reservas */
 
 .formulario-reserva {
     display: grid;
@@ -183,34 +220,8 @@ th {
     color: #a32222;
 }
 
-@media (max-width: 600px) {
-    .formulario-reserva {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Botones de las acciones de cada reserva */
-.acciones {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-button.peligro {
-    background: #c0392b;
-    color: white;
-}
-
-button.peligro:hover {
-    background: #922b21;
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: wait;
-}
-
 /* Ventana de detalles */
+
 #dialogo-detalles {
     width: min(650px, calc(100% - 32px));
     max-height: 85vh;
@@ -252,4 +263,34 @@ button:disabled {
 #contenido-detalles li {
     margin-bottom: 10px;
     line-height: 1.5;
+}
+
+/* Adaptación a pantallas medianas */
+
+@media (max-width: 850px) {
+    .filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Adaptación a móviles */
+
+@media (max-width: 600px) {
+    .formulario-reserva {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    main {
+        padding: 0 12px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .filtros {
+        grid-template-columns: 1fr;
+    }
 }
