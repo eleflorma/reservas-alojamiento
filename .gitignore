@@ -3,4 +3,7 @@
 /database/.env
 /.idea/
 /.vscode/
+# Configuración local de Postman
+.postman/
+postman/
 
