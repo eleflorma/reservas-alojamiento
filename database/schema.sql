@@ -119,7 +119,7 @@ INSERT INTO reserva_evento (
 ) VALUES
 (1, 'creacion', 'Reserva creada'),
 (2, 'creacion', 'Reserva creada'),
-(2, 'estado', 'Reserva confirmada inicialmente como pendiente'),
+(2, 'estado', 'Estado inicial: pendiente'),
 (3, 'creacion', 'Reserva creada'),
 (3, 'estado', 'Reserva cancelada'),
 (4, 'creacion', 'Reserva creada'),
